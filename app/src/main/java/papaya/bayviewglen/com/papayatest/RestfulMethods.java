@@ -12,6 +12,12 @@ import org.json.JSONObject;
 
 public class RestfulMethods {
 
+    //Used for all requests to the server
+    //call request GET with JSON object to fetch single post + addExtension to the url of the id
+    //call request PUT with JSON with object to edit + addExtension to the url of the id
+    //call request GET with no object to fetch all
+    //call request POST with JSON object to add new object
+
     public static void JSONObjectRequest (RequestQueue requestQueue, String baseUrl, JSONObject jsonObj, int method){
         JsonObjectRequest objectRequest = new JsonObjectRequest(
                 method,

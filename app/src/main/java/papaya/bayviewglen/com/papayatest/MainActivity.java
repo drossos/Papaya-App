@@ -11,8 +11,16 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by arunj on 5/23/2018.
@@ -23,6 +31,20 @@ public class MainActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        Map<String, Object> test = new HashMap();
+        String baseUrl = "https://backend-papaya.herokuapp.com/instruments";
+        test.put("instrument", "cream");
+        test.put("status", "yes");
+        test.put("loanee", "jeff");
+        test.put("serial", "357");
+        String [] tags = {"jewish folk", "German Metal"};
+        test.put("tags", tags);
+        JSONObject testJSon = new JSONObject(test);
+
+        RestfulMethods.JSONObjectRequest(requestQueue, baseUrl, testJSon, Request.Method.POST);
 
         setContentView(R.layout.activity_main);
 

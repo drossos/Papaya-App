@@ -17,6 +17,7 @@ public class InstrumentLogging extends AppCompatActivity {
     String id;
     EditText instrumentType;
     Switch loanedOutSwitch;
+    EditText serialNumber;
     boolean isLoanedOut = false;
     EditText loaneeName;
     Button doneButton;
@@ -27,7 +28,7 @@ public class InstrumentLogging extends AppCompatActivity {
         setContentView(R.layout.activity_instrument_logging);
 
         instrumentType = (EditText) findViewById(R.id.instrumentType);
-
+        serialNumber = (EditText) findViewById(R.id.serialNumber);
         loanedOutSwitch = (Switch) findViewById(R.id.loanedOutSwitch);
         loaneeName = (EditText) findViewById(R.id.loaneeName);
         doneButton = (Button) findViewById(R.id.doneButton);
@@ -52,6 +53,7 @@ public class InstrumentLogging extends AppCompatActivity {
     public void submitData(View v){
         //TODO Log stuff in DB
         String instrumentTypeVal = instrumentType.getText().toString();
+        String serialNumberVal = serialNumber.getText().toString();
         String loaneeNameVal = loaneeName.getText().toString();
 
         //Contains id from qr code
@@ -60,12 +62,15 @@ public class InstrumentLogging extends AppCompatActivity {
         if(instrumentTypeVal.equals(""))
             instrumentType.setError("This field cannot be blank");
 
+        else if(serialNumberVal.equals(""))
+            serialNumber.setError("This field cannot be blank.");
+
+
         else if(isLoanedOut && loaneeNameVal.equals(""))
             loaneeName.setError("This field cannot be blank");
 
         else{
             //Send stuff to table
-
             Toast confirm = Toast.makeText(getApplicationContext(), "Item Logged", Toast.LENGTH_SHORT);
             confirm.show();
 
