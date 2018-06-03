@@ -1,6 +1,7 @@
 package papaya.bayviewglen.com.papayatest;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -48,8 +49,12 @@ public class InstrumentLogging extends AppCompatActivity {
         });
     }
 
+    public void applyTags(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+       // View view = getLayoutInflater().inflate(R.layout.dialog_tags);
+    }
+
     //Method for submit button
-    //TODO add if all values are not blank
     public void submitData(View v){
         //TODO Log stuff in DB
         String instrumentTypeVal = instrumentType.getText().toString();

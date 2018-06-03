@@ -69,13 +69,25 @@
         android:layout_width="108dp"
         android:layout_height="63dp"
         android:layout_marginBottom="52dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginEnd="52dp"
         android:backgroundTint="@color/colorPrimaryDark"
         android:onClick="submitData"
         android:text="Done"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/setTags"
+        android:layout_width="108dp"
+        android:layout_height="63dp"
+        android:layout_marginBottom="52dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Set Tags"
+        android:onClick="applyTags"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/doneButton"
+        app:layout_constraintHorizontal_bias="0.46"
         app:layout_constraintStart_toStartOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

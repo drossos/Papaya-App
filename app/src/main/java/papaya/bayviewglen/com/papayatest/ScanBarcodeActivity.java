@@ -60,6 +60,7 @@ public class ScanBarcodeActivity extends Activity {
                 }
             }
 
+            //TODO after camera open for a while, it registers false positive
             @Override
             public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int i1, int i2) {
 
