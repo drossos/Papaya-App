@@ -34,7 +34,6 @@
             android:name=".ScanBarcodeActivity"
             android:label="Scan Barcode" />
         <activity android:name=".InstrumentLogging" />
-        <activity android:name=".AddTags"></activity>
     </application>
 
 </manifest>

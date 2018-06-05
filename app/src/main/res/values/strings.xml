@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Papayatest</string>
+    <string name="title_activity_dialog_login">DialogLogin</string>
 </resources>
