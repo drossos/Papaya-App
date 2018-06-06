@@ -189,7 +189,7 @@ public class InstrumentLogging extends AppCompatActivity {
             tempMap.put("loanee", loaneeNameVal);
             tempMap.put("serial", serialNumberVal);
             tempMap.put("tags", getSelectedTags());
-            JSONObject tempJSON = new JSONObject(tempMap);
+            JSONObject tempJSON = new JSONObject(tempMap); 
             String url = BASE_URL;
             //get which rest method to use
             if(Integer.parseInt(getIntent().getStringExtra("restMethod")) == Request.Method.PUT){
