@@ -2,9 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/PapayaArun.iml" filepath="$PROJECT_DIR$/.idea/PapayaArun.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Papayatest.iml" filepath="$PROJECT_DIR$/Papayatest.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Papaya.iml" filepath="$PROJECT_DIR$/Papaya.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
