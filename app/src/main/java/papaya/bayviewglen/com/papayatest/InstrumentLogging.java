@@ -45,7 +45,7 @@ public class InstrumentLogging extends AppCompatActivity {
     AlertDialog dialog;
     ListView tagsList;
     Button submitTagsBtn;
-    ArrayList<String> chosenTags = new ArrayList<String>(); 
+    ArrayList<String> chosenTags = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
