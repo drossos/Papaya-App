@@ -15,14 +15,24 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import static papaya.bayviewglen.com.papayatest.MainActivity.BASE_URL;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.text.Text;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static papaya.bayviewglen.com.papayatest.MainActivity.BASE_URL;
+import static papaya.bayviewglen.com.papayatest.MainActivity.TAGS_URL;
 
 public class InstrumentLogging extends AppCompatActivity {
-    String id;
+    String qrID;
     EditText instrumentType;
     Switch loanedOutSwitch; //TODO change switch track color to same orange
     EditText serialNumber;
@@ -49,6 +59,8 @@ public class InstrumentLogging extends AppCompatActivity {
         loaneeName = (EditText) findViewById(R.id.loaneeName);
         doneButton = (Button) findViewById(R.id.doneButton);
 
+        fillFields();
+
         //Listener for switch that hides/shows loaneeName EditText when toggled
         loanedOutSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -67,44 +79,31 @@ public class InstrumentLogging extends AppCompatActivity {
         setTagDialog();
     }
 
+    private void fillFields() {
+        if (getIntent().getStringExtra("id") != ""){
+            String fillIns = getIntent().getStringExtra("instrument");
+            instrumentType.setText(getIntent().getStringExtra("instrument"), TextView.BufferType.EDITABLE);
+            serialNumber.setText(getIntent().getStringExtra("serial"), TextView.BufferType.EDITABLE);
+            loaneeName.setText(getIntent().getStringExtra("loanee"), TextView.BufferType.EDITABLE);
+            //TODO CHANGE BUTTON TO CHECKED IF THERE IS A LOANEE
+            if (getIntent().getStringExtra("loanee") != ""){
+                loaneeName.setVisibility(View.VISIBLE);
+                loanedOutSwitch.setChecked(true);
+            }
+        }
+    }
+
     private void setTagDialog() {
+        String[] temp = getIntent().getStringArrayExtra("tags");
         builder = new AlertDialog.Builder(InstrumentLogging.this);
         tagView = getLayoutInflater().inflate(R.layout.dialog_list, null);
 
         //TODO get list of tags from DB and add to tags ArrayList
         ArrayList<String> tags = new ArrayList<String>();
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
-        tags.add("test");
+        tags.add("brass");
+        tags.add("woodwinds");
+        tags.add("strings");
+        tags.add("percussion");
 
         //Creates Array Adapter and sets ListView contents to tag ArrayList
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, tags);
@@ -115,6 +114,17 @@ public class InstrumentLogging extends AppCompatActivity {
         //Listener checks chosenTags for selected tag and adds/removes accordingly
         tagsList.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         tagsList.setItemsCanFocus(false);
+
+        for (int i =0; i < temp.length;i++){
+            for (int k =0; k < tags.size();k++){
+                if (tags.get(k).equals(temp[i])){
+                    tagsList.setItemChecked(k,true);
+                    chosenTags.add(temp[i]);
+
+                }
+            }
+        }
+
         tagsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -152,7 +162,7 @@ public class InstrumentLogging extends AppCompatActivity {
         //TODO dont forget that there is an arrayList of selected tags universally available
 
         //Contains id from qr code
-        id = getIntent().getStringExtra("BARCODE_VALUE");
+        qrID = getIntent().getStringExtra("barcode");
 
         if(instrumentTypeVal.equals(""))
             instrumentType.setError("This field cannot be blank");
@@ -165,12 +175,48 @@ public class InstrumentLogging extends AppCompatActivity {
             loaneeName.setError("This field cannot be blank");
 
         if(!(instrumentTypeVal.equals("") || serialNumberVal.equals("") || (isLoanedOut && loaneeNameVal.equals("")))){
-            //TODO Log stuff in DB here
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+            //TODO MAKE IT ABLE TO READ IF IN OR OUT STATUS NAD UPDATE TAGS
+
+            if (getLoanStatus().equals("in"))
+                loaneeNameVal = "";
+
+            Map<String, Object> tempMap = new HashMap();
+            tempMap.put("qrID", qrID);
+            tempMap.put("instrument",instrumentTypeVal);
+            tempMap.put("status", getLoanStatus());
+            tempMap.put("loanee", loaneeNameVal);
+            tempMap.put("serial", serialNumberVal);
+            tempMap.put("tags", getSelectedTags());
+            JSONObject tempJSON = new JSONObject(tempMap);
+            String url = BASE_URL;
+            //get which rest method to use
+            if(Integer.parseInt(getIntent().getStringExtra("restMethod")) == Request.Method.PUT){
+                url += "/" + getIntent().getStringExtra("id");
+            }
+            RestfulMethods.JSONObjectRequest(requestQueue, url, tempJSON, Integer.parseInt(getIntent().getStringExtra("restMethod")));
+            RestfulMethods.JSONObjectRequest(requestQueue, BASE_URL, null, Request.Method.GET);
             Toast confirm = Toast.makeText(getApplicationContext(), "Item Logged", Toast.LENGTH_SHORT);
             confirm.show();
-
+            finish();
             Intent reset = new Intent(this, MainActivity.class);
             startActivity(reset);
         }
+    }
+
+    public String[] getSelectedTags() {
+        String[] temp = new String[chosenTags.size()];
+        for (int i=0; i < temp.length;i++){
+            temp[i]= chosenTags.get(i);
+        }
+        return temp;
+    }
+
+    public String getLoanStatus() {
+        if (loanedOutSwitch.isChecked()){
+            return "out";
+        } else
+            return "in";
     }
 }

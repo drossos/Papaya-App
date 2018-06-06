@@ -2,6 +2,7 @@ package papaya.bayviewglen.com.papayatest;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.VoiceInteractor;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -9,13 +10,17 @@ import android.support.v4.app.ActivityCompat;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
-import android.view.Window;
 
+import com.android.volley.Request;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.CameraSource;
 import com.google.android.gms.vision.Detector;
 import com.google.android.gms.vision.barcode.Barcode;
 import com.google.android.gms.vision.barcode.BarcodeDetector;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 
@@ -28,6 +33,7 @@ public class ScanBarcodeActivity extends Activity {
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_scan_barcode);
 
         cameraPreview = (SurfaceView) findViewById(R.id.camera_preview);
@@ -85,8 +91,45 @@ public class ScanBarcodeActivity extends Activity {
                 //TODO add search function and pass in existing values if id exists
 
                 if(barcodes.size() > 0){
+                    String tempID ="";
+                    String tempInstrument="";
+                    String tempStatus="";
+                    String tempLoanee="";
+                    String tempSerial="";
+                    String restMethod = Request.Method.POST +"";
+                    String[] tempTags = {};
+
                     Intent intent = new Intent();
+                    try {
+                        //TODO MAKE SURE THE DATABASE IS CONFIGED FOR THE QRID DATA FIELD
+                        JSONObject fetchedJSON = RestfulMethods.checkIfInDB(barcodes.valueAt(0).displayValue);
+                        if(fetchedJSON != null){
+                            tempID = fetchedJSON.getString("_id");
+                            tempInstrument = fetchedJSON.getString("instrument");
+                            tempStatus = fetchedJSON.getString("status");
+                            tempLoanee = fetchedJSON.getString("loanee");
+                            tempSerial = fetchedJSON.getString("serial");
+                            restMethod = Request.Method.PUT+"";
+                            //converting JSONArray to String[]
+                            JSONArray temp = (JSONArray) fetchedJSON.get("tags");
+                            tempTags = new String[temp.length()];
+                            for (int i=0; i < temp.length();i++){
+                                tempTags[i] = temp.getString(i);
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                     intent.putExtra("barcode", barcodes.valueAt(0)); //get Latest Barcode from the array
+                    intent.putExtra("id",tempID);
+                    intent.putExtra("instrument",tempInstrument);
+                    intent.putExtra("status",tempStatus);
+                    intent.putExtra("loanee",tempLoanee);
+                    intent.putExtra("serial",tempSerial);
+                    intent.putExtra("restMethod",restMethod);
+                    intent.putExtra("tags",tempTags);
+
                     setResult(CommonStatusCodes.SUCCESS, intent);
                     finish();
                 }

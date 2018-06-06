@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +16,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -28,6 +30,9 @@ import java.util.Map;
  */
 
 public class MainActivity extends Activity {
+    public static final String BASE_URL = "https://backend-papaya.herokuapp.com/instruments";
+    public static final String TAGS_URL = "https://backend-papaya.herokuapp.com/tags";
+    public static JSONObject serverTags;
     private static final int CAMERA_REQUEST = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +41,7 @@ public class MainActivity extends Activity {
         RequestQueue requestQueue = Volley.newRequestQueue(this);
 
         Map<String, Object> test = new HashMap();
-        String baseUrl = "https://backend-papaya.herokuapp.com/instruments";
+        test.put("qrID", "test");
         test.put("instrument", "cream");
         test.put("status", "yes");
         test.put("loanee", "jeff");
@@ -45,7 +50,11 @@ public class MainActivity extends Activity {
         test.put("tags", tags);
         JSONObject testJSon = new JSONObject(test);
 
-        RestfulMethods.JSONObjectRequest(requestQueue, baseUrl, testJSon, Request.Method.POST);
+        RestfulMethods.JSONObjectRequest(requestQueue, BASE_URL, null, Request.Method.GET);
+
+        /*RestfulMethods.JSONObjectRequest(requestQueue, TAGS_URL, null, Request.Method.GET);
+        serverTags= RestfulMethods.tags;*/
+
 
         setContentView(R.layout.activity_main);
 
@@ -73,7 +82,14 @@ public class MainActivity extends Activity {
 
                     //Switches to instrument logging page once barcode is scanned
                     Intent logInstrument = new Intent(this, InstrumentLogging.class);
-                    logInstrument.putExtra("BARCODE_VALUE", barcodeVal);
+                    logInstrument.putExtra("barcode", barcodeVal);
+                    logInstrument.putExtra("id",data.getStringExtra("id"));
+                    logInstrument.putExtra("instrument",data.getStringExtra("instrument"));
+                    logInstrument.putExtra("status",data.getStringExtra("status"));
+                    logInstrument.putExtra("loanee",data.getStringExtra("loanee"));
+                    logInstrument.putExtra("serial",data.getStringExtra("serial"));
+                    logInstrument.putExtra("restMethod",data.getStringExtra("restMethod"));
+                    logInstrument.putExtra("tags",data.getStringArrayExtra("tags"));
                     startActivity(logInstrument);
                 }else{
                     //Pops up with error if barcode value not found
