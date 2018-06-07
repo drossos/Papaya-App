@@ -40,6 +40,7 @@ public class ScanBarcodeActivity extends Activity {
         createCameraSource();
     }
 
+    //create camera view
     private void createCameraSource() {
         final BarcodeDetector barcodeDetector = new BarcodeDetector.Builder(this).build();
         final CameraSource cameraSource = new CameraSource.Builder(this, barcodeDetector)
@@ -47,6 +48,7 @@ public class ScanBarcodeActivity extends Activity {
 
         cameraPreview.getHolder().addCallback(new SurfaceHolder.Callback() {
 
+            //when camera surface has been created
             @Override
             public void surfaceCreated(SurfaceHolder surfaceHolder) {
                 if (ActivityCompat.checkSelfPermission(ScanBarcodeActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
@@ -84,6 +86,7 @@ public class ScanBarcodeActivity extends Activity {
 
             }
 
+            //on viewing a qr code
             @Override
             public void receiveDetections(Detector.Detections<Barcode> detections) {
                 final SparseArray<Barcode> barcodes = detections.getDetectedItems();

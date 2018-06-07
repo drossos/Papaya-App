@@ -38,9 +38,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-
-        Map<String, Object> test = new HashMap();
+        //sample for json data
+       /* Map<String, Object> test = new HashMap();
         test.put("qrID", "test");
         test.put("instrument", "cream");
         test.put("status", "yes");
@@ -48,16 +47,15 @@ public class MainActivity extends Activity {
         test.put("serial", "357");
         String [] tags = {"jewish folk", "German Metal"};
         test.put("tags", tags);
-        JSONObject testJSon = new JSONObject(test);
+        JSONObject testJSon = new JSONObject(test);*/
 
+       //initial query for contents of database
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
         RestfulMethods.JSONObjectRequest(requestQueue, BASE_URL, null, Request.Method.GET);
-
-        /*RestfulMethods.JSONObjectRequest(requestQueue, TAGS_URL, null, Request.Method.GET);
-        serverTags= RestfulMethods.tags;*/
-
 
         setContentView(R.layout.activity_main);
 
+        //check and request camera
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 == PackageManager.PERMISSION_DENIED){
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA},
@@ -72,6 +70,7 @@ public class MainActivity extends Activity {
         startActivityForResult(intent, 0);
     }
 
+    //onrecieve result from the scanbarcode activity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
         if(requestCode == 0){

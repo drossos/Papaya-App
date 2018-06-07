@@ -79,13 +79,13 @@ public class InstrumentLogging extends AppCompatActivity {
         setTagDialog();
     }
 
+    //fill existing fields with content from db
     private void fillFields() {
         if (getIntent().getStringExtra("id") != ""){
             String fillIns = getIntent().getStringExtra("instrument");
             instrumentType.setText(getIntent().getStringExtra("instrument"), TextView.BufferType.EDITABLE);
             serialNumber.setText(getIntent().getStringExtra("serial"), TextView.BufferType.EDITABLE);
             loaneeName.setText(getIntent().getStringExtra("loanee"), TextView.BufferType.EDITABLE);
-            //TODO CHANGE BUTTON TO CHECKED IF THERE IS A LOANEE
             if (getIntent().getStringExtra("loanee") != ""){
                 loaneeName.setVisibility(View.VISIBLE);
                 loanedOutSwitch.setChecked(true);
@@ -93,6 +93,7 @@ public class InstrumentLogging extends AppCompatActivity {
         }
     }
 
+    //initialzing tags, and check them if already in db
     private void setTagDialog() {
         String[] temp = getIntent().getStringArrayExtra("tags");
         builder = new AlertDialog.Builder(InstrumentLogging.this);
@@ -125,6 +126,7 @@ public class InstrumentLogging extends AppCompatActivity {
             }
         }
 
+        //listener for selecting the tags
         tagsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -177,11 +179,11 @@ public class InstrumentLogging extends AppCompatActivity {
         if(!(instrumentTypeVal.equals("") || serialNumberVal.equals("") || (isLoanedOut && loaneeNameVal.equals("")))){
             RequestQueue requestQueue = Volley.newRequestQueue(this);
 
-            //TODO MAKE IT ABLE TO READ IF IN OR OUT STATUS NAD UPDATE TAGS
-
+            //set loan name to nothing if is in
             if (getLoanStatus().equals("in"))
                 loaneeNameVal = "";
 
+            //create new json
             Map<String, Object> tempMap = new HashMap();
             tempMap.put("qrID", qrID);
             tempMap.put("instrument",instrumentTypeVal);
@@ -195,6 +197,7 @@ public class InstrumentLogging extends AppCompatActivity {
             if(Integer.parseInt(getIntent().getStringExtra("restMethod")) == Request.Method.PUT){
                 url += "/" + getIntent().getStringExtra("id");
             }
+            //send/edit json file then send to dbsss
             RestfulMethods.JSONObjectRequest(requestQueue, url, tempJSON, Integer.parseInt(getIntent().getStringExtra("restMethod")));
             RestfulMethods.JSONObjectRequest(requestQueue, BASE_URL, null, Request.Method.GET);
             Toast confirm = Toast.makeText(getApplicationContext(), "Item Logged", Toast.LENGTH_SHORT);
@@ -205,6 +208,7 @@ public class InstrumentLogging extends AppCompatActivity {
         }
     }
 
+    //return array of the selected tags
     public String[] getSelectedTags() {
         String[] temp = new String[chosenTags.size()];
         for (int i=0; i < temp.length;i++){
@@ -213,6 +217,7 @@ public class InstrumentLogging extends AppCompatActivity {
         return temp;
     }
 
+    //get status of loan
     public String getLoanStatus() {
         if (loanedOutSwitch.isChecked()){
             return "out";
