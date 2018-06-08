@@ -158,9 +158,9 @@ public class InstrumentLogging extends AppCompatActivity {
 
     //Method for submit button
     public void submitData(View v){
-        String instrumentTypeVal = instrumentType.getText().toString().toUpperCase();
-        String serialNumberVal = serialNumber.getText().toString().toUpperCase();
-        String loaneeNameVal = loaneeName.getText().toString().toUpperCase();
+        String instrumentTypeVal = instrumentType.getText().toString().toLowerCase();
+        String serialNumberVal = serialNumber.getText().toString().toLowerCase();
+        String loaneeNameVal = loaneeName.getText().toString().toLowerCase();
         //TODO dont forget that there is an arrayList of selected tags universally available
 
         //Contains id from qr code
