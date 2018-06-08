@@ -99,12 +99,12 @@ public class InstrumentLogging extends AppCompatActivity {
         builder = new AlertDialog.Builder(InstrumentLogging.this);
         tagView = getLayoutInflater().inflate(R.layout.dialog_list, null);
 
-        //TODO get list of tags from DB and add to tags ArrayList
+        //TODO when getting list of tags from DB, capitalize for UI
         ArrayList<String> tags = new ArrayList<String>();
-        tags.add("brass");
-        tags.add("woodwinds");
-        tags.add("strings");
-        tags.add("percussion");
+        tags.add("Brass");
+        tags.add("Woodwinds");
+        tags.add("Strings");
+        tags.add("Percussion");
 
         //Creates Array Adapter and sets ListView contents to tag ArrayList
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_multiple_choice, tags);
@@ -161,7 +161,6 @@ public class InstrumentLogging extends AppCompatActivity {
         String instrumentTypeVal = instrumentType.getText().toString().toLowerCase();
         String serialNumberVal = serialNumber.getText().toString().toLowerCase();
         String loaneeNameVal = loaneeName.getText().toString().toLowerCase();
-        //TODO dont forget that there is an arrayList of selected tags universally available
 
         //Contains id from qr code
         qrID = getIntent().getStringExtra("barcode");
@@ -191,7 +190,7 @@ public class InstrumentLogging extends AppCompatActivity {
             tempMap.put("loanee", loaneeNameVal);
             tempMap.put("serial", serialNumberVal);
             tempMap.put("tags", getSelectedTags());
-            JSONObject tempJSON = new JSONObject(tempMap); 
+            JSONObject tempJSON = new JSONObject(tempMap);
             String url = BASE_URL;
             //get which rest method to use
             if(Integer.parseInt(getIntent().getStringExtra("restMethod")) == Request.Method.PUT){
@@ -212,7 +211,7 @@ public class InstrumentLogging extends AppCompatActivity {
     public String[] getSelectedTags() {
         String[] temp = new String[chosenTags.size()];
         for (int i=0; i < temp.length;i++){
-            temp[i]= chosenTags.get(i);
+            temp[i]= chosenTags.get(i).toLowerCase();
         }
         return temp;
     }
